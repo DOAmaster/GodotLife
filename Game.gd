@@ -18,34 +18,66 @@ var neighborsAlive
 var currentVector
 var xRange
 var yRange
+var setupCount
+var setupIndex
+var rng = RandomNumberGenerator.new()
 
 # 1 = life   |   4 = dead
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	xRange = 100
 	yRange = 100
+	setupCount = 3
 	running = true
+	rng.randomize()
+	clearBoard()
+	setupBoard()
+	
 	while(running):
 		yield(get_tree().create_timer(.5), "timeout")
 		processGeneration()
 	pass # Replace with function body.
 
+func setupBoard():
+	setupIndex = 0
+	clearBoard()
+	while(setupIndex < setupCount):
+		for x in range(xRange):
+			for y in range(yRange):
+				currentVector = Vector2(x,y)
+				var my_random_number = rng.randi_range(1, 10)
+				if(my_random_number == 1):
+					get_node("TileMap").set_cellv(currentVector,1)
+					setupIndex = setupIndex + 1
+					break
+				else:
+					get_node("TileMap").set_cellv(currentVector,4)
+	pass
+
+func clearBoard():
+	print("Clearing Board")
+	for x in range(xRange):
+		for y in range(yRange):
+			currentVector = Vector2(x,y)
+			get_node("TileMap").set_cellv(currentVector,4)
+
 func processGeneration():
 	for x in range(xRange):
 		for y in range(yRange):
 			currentVector = Vector2(x,y)
+			get_node("TileMap").set_cellv(currentVector,4)
 			myIndex = get_node("TileMap").get_cell(x,y)
 			#print(myIndex)
 			#if (myIndex == 1):
 			neighborsAlive = 0
 			#print("life detected on " + "("+String(x)+","+String(y)+")")
 			neighbor1 = get_node("TileMap").get_cell(x-1,y-1)
-			neighbor2 = get_node("TileMap").get_cell(x,y-1)
-			neighbor3 = get_node("TileMap").get_cell(x+1,y-1)
-			neighbor4 = get_node("TileMap").get_cell(x-1,y)
-			neighbor5 = get_node("TileMap").get_cell(x+1,y)
-			neighbor6 = get_node("TileMap").get_cell(x-1,y+1)
-			neighbor7 = get_node("TileMap").get_cell(x,y+1)
+			neighbor2 = get_node("TileMap").get_cell(x-1,y)
+			neighbor3 = get_node("TileMap").get_cell(x-1,y+1)
+			neighbor4 = get_node("TileMap").get_cell(x,y-1)
+			neighbor5 = get_node("TileMap").get_cell(x,y+1)
+			neighbor6 = get_node("TileMap").get_cell(x+1,y-1)
+			neighbor7 = get_node("TileMap").get_cell(x+1,y)
 			neighbor8 = get_node("TileMap").get_cell(x+1,y+1)
 			if(neighbor1 == 1): neighborsAlive = neighborsAlive + 1
 			if(neighbor2 == 1): neighborsAlive = neighborsAlive + 1
@@ -59,14 +91,16 @@ func processGeneration():
 			if(neighborsAlive < 2):
 				get_node("TileMap").set_cellv(currentVector,4)
 			#Any live cell with two or three live neighbours lives on to the next generation.
-			if(neighborsAlive == 2 || neighborsAlive == 3):
+			elif(neighborsAlive == 2 || neighborsAlive == 3):
 				get_node("TileMap").set_cellv(currentVector,1)
 			#Any live cell with more than three live neighbours dies, as if by overpopulation.
-			if(neighborsAlive > 3):
+			elif(neighborsAlive > 3):
 				get_node("TileMap").set_cellv(currentVector,4)
 			#Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-			if(neighborsAlive == 3):
+			elif(neighborsAlive == 3):
 				get_node("TileMap").set_cellv(currentVector,1)
+			else:
+				get_node("TileMap").set_cellv(currentVector,4)
 	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -74,3 +108,21 @@ func processGeneration():
 #	yield(get_tree().create_timer(.1), "timeout")
 #	processGeneration()
 #	pass
+
+
+func _on_Stop_pressed():
+	pass # Replace with function body.
+
+
+func _on_Start_pressed():
+	pass # Replace with function body.
+
+
+func _on_Clear_pressed():
+	clearBoard()
+	pass # Replace with function body.
+
+
+func _on_Reset_pressed():
+	setupBoard()
+	pass # Replace with function body.
