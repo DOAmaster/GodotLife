@@ -1,2 +1,2 @@
 # GodotLife
- Conway's Game of Life on the Godot engine
+ Conway's Game of Life in the Godot engine
