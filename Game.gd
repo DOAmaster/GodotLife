@@ -1,9 +1,5 @@
 extends Node2D
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 var myIndex
 var neighbor1
 var neighbor2
@@ -21,7 +17,7 @@ var yRange
 var setupCount
 var setupIndex
 var rng = RandomNumberGenerator.new()
-
+var fate
 # 1 = life   |   4 = dead
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -30,8 +26,8 @@ func _ready():
 	setupCount = 3
 	running = true
 	rng.randomize()
-	clearBoard()
-	setupBoard()
+	#clearBoard()
+	#setupBoard()
 	
 	while(running):
 		yield(get_tree().create_timer(.5), "timeout")
@@ -64,13 +60,11 @@ func clearBoard():
 func processGeneration():
 	for x in range(xRange):
 		for y in range(yRange):
+			#fate = false
 			currentVector = Vector2(x,y)
-			get_node("TileMap").set_cellv(currentVector,4)
+			#get_node("TileMap").set_cellv(currentVector,4)
 			myIndex = get_node("TileMap").get_cell(x,y)
-			#print(myIndex)
-			#if (myIndex == 1):
 			neighborsAlive = 0
-			#print("life detected on " + "("+String(x)+","+String(y)+")")
 			neighbor1 = get_node("TileMap").get_cell(x-1,y-1)
 			neighbor2 = get_node("TileMap").get_cell(x-1,y)
 			neighbor3 = get_node("TileMap").get_cell(x-1,y+1)
@@ -87,28 +81,24 @@ func processGeneration():
 			if(neighbor6 == 1): neighborsAlive = neighborsAlive + 1
 			if(neighbor7 == 1): neighborsAlive = neighborsAlive + 1
 			if(neighbor8 == 1): neighborsAlive = neighborsAlive + 1
-			#Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-			if(neighborsAlive < 2):
-				get_node("TileMap").set_cellv(currentVector,4)
-			#Any live cell with two or three live neighbours lives on to the next generation.
-			elif(neighborsAlive == 2 || neighborsAlive == 3):
-				get_node("TileMap").set_cellv(currentVector,1)
-			#Any live cell with more than three live neighbours dies, as if by overpopulation.
-			elif(neighborsAlive > 3):
-				get_node("TileMap").set_cellv(currentVector,4)
-			#Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-			elif(neighborsAlive == 3):
+			
+			if(myIndex == 1):
+				#fate = buddies >= 2 && buddies <= 3 ? life : death;
+				if(neighborsAlive >= 2 && neighborsAlive <= 3):
+					fate = true
+				else:
+					fate = false
+			else:
+				#fate = buddies === 3 ? life : death;
+				if(neighborsAlive == 3):
+					fate = true
+				else:
+					fate = false
+			if (fate == true):
 				get_node("TileMap").set_cellv(currentVector,1)
 			else:
 				get_node("TileMap").set_cellv(currentVector,4)
 	pass
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	yield(get_tree().create_timer(.1), "timeout")
-#	processGeneration()
-#	pass
-
 
 func _on_Stop_pressed():
 	pass # Replace with function body.
