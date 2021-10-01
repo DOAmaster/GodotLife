@@ -18,6 +18,8 @@ var setupCount
 var setupIndex
 var rng = RandomNumberGenerator.new()
 var fate
+var fateList
+var fateDie
 # 1 = life   |   4 = dead
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -26,13 +28,27 @@ func _ready():
 	setupCount = 3
 	running = true
 	rng.randomize()
+	fateList = PoolVector2Array()
+	fateDie = PoolVector2Array()
 	#clearBoard()
 	#setupBoard()
 	
 	while(running):
-		yield(get_tree().create_timer(.5), "timeout")
 		processGeneration()
+		processBoard()
+		yield(get_tree().create_timer(.5), "timeout")
 	pass # Replace with function body.
+
+func processBoard():
+	for entry in fateList:
+		#print(entry)
+		get_node("TileMap").set_cellv(entry,1)
+	for entry in fateDie:
+		#print(entry)
+		get_node("TileMap").set_cellv(entry,4)
+	fateList.resize(0)
+	fateDie.resize(0)
+	pass
 
 func setupBoard():
 	setupIndex = 0
@@ -81,23 +97,20 @@ func processGeneration():
 			if(neighbor6 == 1): neighborsAlive = neighborsAlive + 1
 			if(neighbor7 == 1): neighborsAlive = neighborsAlive + 1
 			if(neighbor8 == 1): neighborsAlive = neighborsAlive + 1
-			
 			if(myIndex == 1):
-				#fate = buddies >= 2 && buddies <= 3 ? life : death;
-				if(neighborsAlive >= 2 && neighborsAlive <= 3):
-					fate = true
-				else:
+				if(neighborsAlive < 2 || neighborsAlive > 3):
 					fate = false
+					fateList.append(currentVector)
+				else:
+					fate = true
+					fateDie.append(currentVector)
 			else:
-				#fate = buddies === 3 ? life : death;
 				if(neighborsAlive == 3):
 					fate = true
-				else:
-					fate = false
-			if (fate == true):
-				get_node("TileMap").set_cellv(currentVector,1)
-			else:
-				get_node("TileMap").set_cellv(currentVector,4)
+					fateList.append(currentVector)
+				#else:
+					#fate = false
+					#fateDie.append(currentVector)
 	pass
 
 func _on_Stop_pressed():
