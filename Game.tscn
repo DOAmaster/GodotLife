@@ -111,82 +111,6 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 [node name="Game" type="Node2D"]
 script = ExtResource( 2 )
 
-[node name="GridContainer" type="GridContainer" parent="."]
-margin_right = 1535.0
-margin_bottom = 161.0
-columns = 10
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="GenCount" type="Button" parent="GridContainer"]
-margin_right = 74.0
-margin_bottom = 20.0
-text = "<COUNT>"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Stop" type="Button" parent="GridContainer"]
-margin_left = 78.0
-margin_right = 123.0
-margin_bottom = 20.0
-text = "STOP"
-
-[node name="Start" type="Button" parent="GridContainer"]
-margin_left = 127.0
-margin_right = 177.0
-margin_bottom = 20.0
-text = "START"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Edit" type="Button" parent="GridContainer"]
-margin_left = 181.0
-margin_right = 222.0
-margin_bottom = 20.0
-text = "EDIT"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Clear" type="Button" parent="GridContainer"]
-margin_left = 226.0
-margin_right = 277.0
-margin_bottom = 20.0
-text = "CLEAR"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Preset1" type="Button" parent="GridContainer"]
-margin_left = 281.0
-margin_right = 383.0
-margin_bottom = 20.0
-text = "firstGenPulsar"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Preset2" type="Button" parent="GridContainer"]
-margin_left = 387.0
-margin_right = 461.0
-margin_bottom = 20.0
-text = "gliderGun"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Preset3" type="Button" parent="GridContainer"]
-margin_left = 465.0
-margin_right = 516.0
-margin_bottom = 20.0
-text = "pulsar"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource( 2 )
 cell_size = Vector2( 16, 16 )
@@ -198,11 +122,82 @@ anchor_mode = 0
 current = true
 zoom = Vector2( 1.5, 1.5 )
 
-[connection signal="pressed" from="GridContainer/GenCount" to="." method="_on_Stop_pressed"]
-[connection signal="pressed" from="GridContainer/Stop" to="." method="_on_Stop_pressed"]
-[connection signal="pressed" from="GridContainer/Start" to="." method="_on_Start_pressed"]
-[connection signal="pressed" from="GridContainer/Edit" to="." method="_on_Edit_pressed"]
-[connection signal="pressed" from="GridContainer/Clear" to="." method="_on_Clear_pressed"]
-[connection signal="pressed" from="GridContainer/Preset1" to="." method="_on_Preset1_pressed"]
-[connection signal="pressed" from="GridContainer/Preset2" to="." method="_on_Preset2_pressed"]
-[connection signal="pressed" from="GridContainer/Preset3" to="." method="_on_Preset3_pressed"]
+[node name="GenCount" type="Button" parent="."]
+margin_right = 100.0
+margin_bottom = 25.0
+text = "<COUNT>"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Stop" type="Button" parent="."]
+margin_left = 204.946
+margin_right = 304.946
+margin_bottom = 25.0
+text = "STOP"
+
+[node name="Start" type="Button" parent="."]
+margin_left = 102.768
+margin_right = 202.768
+margin_bottom = 25.0
+text = "START"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Edit" type="Button" parent="."]
+margin_left = 408.871
+margin_right = 508.871
+margin_bottom = 25.0
+text = "EDIT"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Clear" type="Button" parent="."]
+margin_left = 307.371
+margin_right = 407.371
+margin_bottom = 25.0
+text = "CLEAR"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Preset1" type="Button" parent="."]
+margin_left = 1434.0
+margin_top = 1.78
+margin_right = 1536.0
+margin_bottom = 26.78
+text = "firstGenPulsar"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Preset2" type="Button" parent="."]
+margin_left = 1434.0
+margin_top = 31.0
+margin_right = 1534.0
+margin_bottom = 56.0
+text = "gliderGun"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Preset3" type="Button" parent="."]
+margin_left = 1434.0
+margin_top = 61.017
+margin_right = 1534.0
+margin_bottom = 86.017
+text = "pulsar"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="GenCount" to="." method="_on_Stop_pressed"]
+[connection signal="pressed" from="Stop" to="." method="_on_Stop_pressed"]
+[connection signal="pressed" from="Start" to="." method="_on_Start_pressed"]
+[connection signal="pressed" from="Edit" to="." method="_on_Edit_pressed"]
+[connection signal="pressed" from="Clear" to="." method="_on_Clear_pressed"]
+[connection signal="pressed" from="Preset1" to="." method="_on_Preset1_pressed"]
+[connection signal="pressed" from="Preset2" to="." method="_on_Preset2_pressed"]
+[connection signal="pressed" from="Preset3" to="." method="_on_Preset3_pressed"]

@@ -55,7 +55,7 @@ func _ready():
 	pass # Replace with function body.
 
 func updateUI():
-	get_node("GridContainer/GenCount").text = String(genCount)
+	get_node("GenCount").text = String(genCount)
 
 func processBoard():
 	for entry in fateList:
