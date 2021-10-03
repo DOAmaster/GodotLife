@@ -37,6 +37,7 @@ func _ready():
 	fateList = PoolVector2Array()
 	fateDie = PoolVector2Array()
 	rngStart = rng.randi_range(1,3)
+	blankBoard()
 	match rngStart:
 		1:presetBoard1()
 		2:presetBoard2()
@@ -46,6 +47,7 @@ func _ready():
 		if(!isPaused):
 			processGeneration()
 			processBoard()
+			genCount = genCount + 1
 			updateUI()
 			yield(get_tree().create_timer(.5), "timeout")
 		else:
@@ -53,7 +55,7 @@ func _ready():
 	pass # Replace with function body.
 
 func updateUI():
-	get_node("Camera2D/GridContainer/GenCount").text = String(genCount)
+	get_node("GridContainer/GenCount").text = String(genCount)
 
 func processBoard():
 	for entry in fateList:
@@ -64,7 +66,6 @@ func processBoard():
 		get_node("TileMap").set_cellv(entry,4)
 	fateList = []
 	fateDie = []
-	genCount = genCount + 1
 	pass
 
 var firstGenPulsar = [Vector2(13, 24), Vector2(14, 23), Vector2(14, 24), Vector2(14, 25), Vector2(15, 23), Vector2(15, 25), Vector2(16, 23), Vector2(16, 24), Vector2(16, 25), Vector2(17, 24)];
@@ -106,10 +107,21 @@ func clearBoard():
 	fateDie = []
 	for x in range(xRange):
 		for y in range(yRange):
-			currentVector = Vector2(x,y)
-			#get_node("TileMap").set_cellv(currentVector,4)
-			fateDie.append(currentVector)
+			fateDie.append(Vector2(x,y))
 	processBoard()
+
+func blankBoard():
+	print("Init Board")
+	isPaused = true
+	genCount = 0
+	updateUI()
+	fateList = []
+	fateDie = []
+	for x in range(xRange):
+		for y in range(yRange):
+			fateDie.append(Vector2(x,y))
+	processBoard()
+	pass
 
 func processGeneration():
 	for x in range(xRange):
@@ -170,22 +182,27 @@ func _on_Clear_pressed():
 func _on_Preset1_pressed():
 	clearBoard()
 	presetBoard1()
+	isEdit = false
 	pass # Replace with function body.
 
 func _on_Preset2_pressed():
 	clearBoard()
 	presetBoard2()
+	isEdit = false
 	pass # Replace with function body.
 
 
 func _on_Preset3_pressed():
 	clearBoard()
 	presetBoard3()
+	isEdit = false
 	pass # Replace with function body.
 
 var clickVectorx
 var clickVectory
 var clickVector
+var myClickIndex
+var myWorldIndex
 func _input(event):
 	# Mouse in viewport coordinates.
 	if event is InputEventMouseButton:
@@ -194,14 +211,21 @@ func _input(event):
 				clickVectorx = event.position.x
 				clickVectory = event.position.y
 				clickVector = Vector2(clickVectorx,clickVectory)
-				myIndex = get_node("TileMap").get_cell(clickVectorx,clickVectory)
-				if (myIndex == 4):
-					get_node("TileMap").set_cellv(clickVector,1)
-					print("Changing to dead ", clickVector)
-				else:
-					get_node("TileMap").set_cellv(clickVector,4)
-					print("Changing to alive: ", clickVector)
+				#print(clickVector)
+				myIndex = get_node("TileMap").get_cellv(clickVector)
+				myClickIndex = get_node("TileMap").world_to_map(event.position)
+				#print(myIndex)
+				var mouse_tile = get_node("TileMap").world_to_map(get_global_mouse_position())
+				#print(mouse_tile)
+				print(myClickIndex)
+				myWorldIndex = get_node("TileMap").get_cellv(mouse_tile)
+				print(myWorldIndex)
+				if (myWorldIndex == 4):
+					get_node("TileMap").set_cellv(mouse_tile,1)
+				elif (myWorldIndex == 1):
+					get_node("TileMap").set_cellv(mouse_tile,4)
 				clickVector = Vector2()
+				myClickIndex = Vector2()
 
 func _on_Edit_pressed():
 	isPaused = true
