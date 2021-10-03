@@ -22,6 +22,8 @@ var fateList
 var fateDie
 var genCount
 var isPaused
+var rngStart
+var isEdit
 # 1 = life   |   4 = dead
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -30,11 +32,15 @@ func _ready():
 	yRange = 100
 	setupCount = 3
 	isPaused =false
+	isEdit = false
 	rng.randomize()
 	fateList = PoolVector2Array()
 	fateDie = PoolVector2Array()
-	#clearBoard()
-	#setupBoard()
+	rngStart = rng.randi_range(1,3)
+	match rngStart:
+		1:presetBoard1()
+		2:presetBoard2()
+		3:presetBoard3()
 	running = true
 	while(running):
 		if(!isPaused):
@@ -47,7 +53,7 @@ func _ready():
 	pass # Replace with function body.
 
 func updateUI():
-	get_node("GridContainer/GenCount").text = String(genCount)
+	get_node("Camera2D/GridContainer/GenCount").text = String(genCount)
 
 func processBoard():
 	for entry in fateList:
@@ -60,11 +66,32 @@ func processBoard():
 	fateDie = []
 	genCount = genCount + 1
 	pass
+
 var firstGenPulsar = [Vector2(13, 24), Vector2(14, 23), Vector2(14, 24), Vector2(14, 25), Vector2(15, 23), Vector2(15, 25), Vector2(16, 23), Vector2(16, 24), Vector2(16, 25), Vector2(17, 24)];
+var gliderGun = [Vector2(5, 1),Vector2(5, 2),Vector2(6, 1),Vector2(6, 2),Vector2(5, 11),Vector2(6, 11),Vector2(7, 11),Vector2(4, 12),Vector2(8, 12),Vector2(3, 13),Vector2(9, 13),Vector2(3, 14),Vector2(9, 14),Vector2(6, 15),Vector2(4, 16),Vector2(8, 16),Vector2(7, 17),Vector2(6, 17),Vector2(5, 17),Vector2(6, 18),Vector2(3, 21),Vector2(4, 21),Vector2(5, 21),Vector2(3, 22),Vector2(4, 22),Vector2(5, 22),Vector2(2, 23),Vector2(6, 23),Vector2(1, 25),Vector2(2, 25),Vector2(6, 25),Vector2(7, 25),Vector2(3, 35),Vector2(4, 35),Vector2(3, 36),Vector2(4, 36)];
+var pulsar = [Vector2(10, 21),Vector2(10, 22),Vector2(10, 26),Vector2(10, 27),Vector2(9, 21),Vector2(9, 27),Vector2(8, 21),Vector2(8, 27),Vector2(12, 17),Vector2(12, 18),Vector2(12, 19),Vector2(12, 22),Vector2(12, 23),Vector2(12, 25),Vector2(12, 26), Vector2(12, 29),Vector2(12, 30),Vector2(12, 31),Vector2(13, 19),Vector2(13, 21),Vector2(13, 23),Vector2(13, 25),Vector2(13, 27),Vector2(13, 29),Vector2(14, 21),Vector2(14, 22),Vector2(14, 26),Vector2(14, 27),Vector2(16, 21),Vector2(16, 22),Vector2(16, 26),Vector2(16, 27),Vector2(17, 19),Vector2(17, 21),Vector2(17, 23),Vector2(17, 25),Vector2(17, 27),Vector2(17, 29),Vector2(18, 17),Vector2(18, 18),Vector2(18, 19),Vector2(18, 22),Vector2(18, 23),Vector2(18, 25),Vector2(18, 26), Vector2(18, 29),Vector2(18, 30),Vector2(18, 31),Vector2(20, 21),Vector2(20, 22),Vector2(20, 26),Vector2(20, 27),Vector2(21, 21),Vector2(21, 27),Vector2(22, 21),Vector2(22, 27)];
 func presetBoard1():
 	isPaused = true
 	setupIndex = 0
 	fateList = firstGenPulsar
+	processBoard()
+	yield(get_tree().create_timer(.5), "timeout")
+	isPaused = false
+	pass
+
+func presetBoard2():
+	isPaused = true
+	setupIndex = 0
+	fateList = gliderGun
+	processBoard()
+	yield(get_tree().create_timer(.5), "timeout")
+	isPaused = false
+	pass
+
+func presetBoard3():
+	isPaused = true
+	setupIndex = 0
+	fateList = pulsar
 	processBoard()
 	yield(get_tree().create_timer(.5), "timeout")
 	isPaused = false
@@ -126,11 +153,13 @@ func processGeneration():
 
 func _on_Stop_pressed():
 	isPaused = true
+	isEdit = false
 	pass # Replace with function body.
 
 
 func _on_Start_pressed():
 	isPaused = false
+	isEdit = false
 	pass # Replace with function body.
 
 
@@ -139,5 +168,42 @@ func _on_Clear_pressed():
 	pass # Replace with function body.
 
 func _on_Preset1_pressed():
+	clearBoard()
 	presetBoard1()
+	pass # Replace with function body.
+
+func _on_Preset2_pressed():
+	clearBoard()
+	presetBoard2()
+	pass # Replace with function body.
+
+
+func _on_Preset3_pressed():
+	clearBoard()
+	presetBoard3()
+	pass # Replace with function body.
+
+var clickVectorx
+var clickVectory
+var clickVector
+func _input(event):
+	# Mouse in viewport coordinates.
+	if event is InputEventMouseButton:
+		if event.button_index == BUTTON_LEFT and event.pressed:
+			if(isEdit):
+				clickVectorx = event.position.x
+				clickVectory = event.position.y
+				clickVector = Vector2(clickVectorx,clickVectory)
+				myIndex = get_node("TileMap").get_cell(clickVectorx,clickVectory)
+				if (myIndex == 4):
+					get_node("TileMap").set_cellv(clickVector,1)
+					print("Changing to dead ", clickVector)
+				else:
+					get_node("TileMap").set_cellv(clickVector,4)
+					print("Changing to alive: ", clickVector)
+				clickVector = Vector2()
+
+func _on_Edit_pressed():
+	isPaused = true
+	isEdit = true
 	pass # Replace with function body.
