@@ -1,4 +1,4 @@
 # GodotLife
-Conway's Game of Life in the Godot engine
+[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in the [Godot game](https://godotengine.org/) engine
 https://doamaster.github.io/GodotLife/
 ![Gameplay](https://i.imgur.com/Zzl5DQk.gif)
